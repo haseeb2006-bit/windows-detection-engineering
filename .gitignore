@@ -216,3 +216,38 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ===== Lab-specific rules (windows-detection-engineering) =====
+
+# --- VM disks, images, and installers ---
+*.vdi
+*.vhd
+*.vhdx
+*.vmdk
+*.ova
+*.ovf
+*.vbox
+*.vbox-prev
+*.sav
+*.iso
+
+# --- Raw Windows telemetry (hostnames, usernames, IPs) ---
+*.evtx
+*.evt
+*.etl
+*.dmp
+
+# --- Third-party tool binaries (download, don't commit) ---
+hayabusa*.exe
+hayabusa-*/
+hayabusa-*.zip
+Sysmon*.exe
+Sysmon*.zip
+tools/
+
+# --- Local, private, and scratch files ---
+local/
+scratch/
+hayabusa-output/
+*.local
+*.local.*
