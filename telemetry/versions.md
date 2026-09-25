@@ -25,8 +25,10 @@ Tracking software versions for reproducibility.
 - Verified working: Event Viewer confirms events logging under
   Applications and Services Logs > Microsoft > Windows > Sysmon > Operational
 
-## Tools (to be filled in when installed)
-- Hayabusa version:
+## Tools
+- Hayabusa: v4.1.0 (Suzumushi Release), downloaded from
+  https://github.com/Yamato-Security/hayabusa/releases
+  Installed at D:\lab\tools\hayabusa (kept outside the repo)
 - Python version:
 
-_Last updated: 25 Sep 2026_
+_Last updated: 26 Sep 2026_
