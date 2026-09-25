@@ -11,17 +11,22 @@ Tracking software versions for reproducibility.
 - VirtualBox: 7.2.20
 - Git, VS Code, GitHub Desktop: already installed
 
-## VM (to be filled in once created)
-- Windows version/build:
-- Sysmon version:
-- Sysmon config source/version:
+## VM
+- Name: lab-win11
+- Windows 11 Home, installed via unattended install
+- ISO: Win11_25H2_English_x64_v2.iso (Microsoft official, downloaded 22 Sep 2026)
+- Allocated: 6144 MB RAM, 2 CPUs, 35 GB disk
+- Snapshot taken: clean-install (before any lab configuration)
+
+## Telemetry
+- Sysmon: installed via Sysmon64.exe
+- Sysmon config: "balanced" profile from olafhartong/sysmon-modular
+  (https://github.com/olafhartong/sysmon-modular)
+- Verified working: Event Viewer confirms events logging under
+  Applications and Services Logs > Microsoft > Windows > Sysmon > Operational
 
 ## Tools (to be filled in when installed)
 - Hayabusa version:
 - Python version:
 
-## Windows 11 ISO
-- Source: microsoft.com/software-download/windows11
-- Downloaded: 22 Sep 2026
-
-_Last updated: 22 Sep 2026_
+_Last updated: 25 Sep 2026_
