@@ -213,6 +213,58 @@ hypothesis would be needed to detect this technique.
 
 **Variant 6 status:** Confirmed (correctly not matched by the Hypothesis 1 rule).
 
-**Overall Case 1 status:** Testing in progress. Variant 7 remains to be tested.
+### Variant 7 — Benign baseline: plain `-Command`, no encoding
+
+**Execution result:** Successful
+
+Command run:
+`powershell.exe -Command "Write-Host 'Variant 7 benign test'"`
+
+PowerShell output:
+`Variant 7 benign test`
+
+**Sysmon evidence:**
+
+* **Event ID:** 1 — Process Create
+* **Image:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **CommandLine:** `"C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -Command "Write-Host 'Variant 7 benign test'"`
+* **RuleName:** `technique_id=T1059.001,technique_name=PowerShell`
+* **ParentImage:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **Event time:** `2026-10-05 19:23:45 UTC`
+
+**Observation:** Completely plain, everyday PowerShell usage. No `-EncodedCommand`
+flag, no Base64, fully readable. A detection rule built on Hypothesis 1 would
+correctly NOT flag this event, confirming the rule does not produce false
+positives on ordinary PowerShell use.
+
+**Variant 7 status:** Confirmed (correctly not matched by the Hypothesis 1 rule).
+
+## Case 1, Hypothesis 1 — Summary
+
+All 7 planned variants were executed and verified against real Sysmon telemetry
+on `lab-win11`.
+
+| Variant | Description | Result |
+|---|---|---|
+| 1 | Full `-EncodedCommand` flag | Detected (as expected) |
+| 2 | Abbreviated `-enc` flag | Detected (as expected) |
+| 3 | Minimal `-e` abbreviation | Detected (as expected) |
+| 4 | Launched via `cmd.exe` as parent | Detected (as expected) |
+| 5 | Mixed-case flag `-EnCoDedCoMmAnD` | Detected (as expected) |
+| 6 | `Invoke-Expression` (different technique) | Not matched (correctly, negative test) |
+| 7 | Plain `-Command`, no encoding | Not matched (correctly, benign baseline) |
+
+**Conclusion:** Hypothesis 1 holds. A detection rule matching Sysmon Event ID 1
+`CommandLine` for `-EncodedCommand`/`-enc`/`-e` (case-insensitive), regardless of
+exact casing or parent process, reliably captures encoded PowerShell execution
+across all tested variants, while correctly not matching unrelated obfuscation
+techniques or ordinary PowerShell use.
+
+**Next steps:** write the actual Sigma detection rule based on this confirmed
+pattern, then test it against Hayabusa (both the bundled rule set and, once
+written, the custom rule) for a more formal tune/holdout evaluation.
+
+**Overall Case 1, Hypothesis 1 status:** Complete. All 7 variants tested and documented.
 
 Date: 05 Oct 2026
+
