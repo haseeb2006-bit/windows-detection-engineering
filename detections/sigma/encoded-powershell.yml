@@ -1,0 +1,26 @@
+title: Suspicious Encoded PowerShell Command
+id: 7f3a2b1c-5e6d-4a8b-9c1f-2d3e4f5a6b7c
+status: experimental
+description: >
+  Detects PowerShell execution using the -EncodedCommand flag or its
+  abbreviations (-enc, -e), which hides the actual command as Base64 text.
+  This flag is uncommon in normal, everyday PowerShell use.
+references:
+  - cases/01-powershell/hypothesis.md
+author: Haseeb
+date: 2026/10/05
+tags:
+  - attack.t1059.001
+  - attack.t1027.010
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|re: '(?i)-e(nc(odedcommand)?)?\s+[A-Za-z0-9+/=]{20,}'
+  condition: selection
+falsepositives:
+  - Legitimate scripts that intentionally use -EncodedCommand for handling
+    special characters (uncommon but possible)
+level: high
