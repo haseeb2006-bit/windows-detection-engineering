@@ -159,6 +159,31 @@ Command Prompt.
 
 **Variant 4 status:** Confirmed.
 
-**Overall Case 1 status:** Testing in progress. Variants 5–7 remain to be tested.
+### Variant 5 — Mixed-case flag `-EnCoDedCoMmAnD`
+
+**Execution result:** Successful
+
+Command run:
+`powershell.exe -EnCoDedCoMmAnD VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADUAIAB0AGUAcwB0ACAAbwBrACcA`
+(decodes to `Write-Host 'Variant 5 test ok'`)
+
+**Sysmon evidence:**
+
+* **Event ID:** 1 — Process Create
+* **Image:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **CommandLine:** `"C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -EnCoDedCoMmAnD VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADUAIAB0AGUAcwB0ACAAbwBrACcA`
+* **RuleName:** `technique_id=T1059.001,technique_name=PowerShell`
+* **ParentImage:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **Event time:** `2026-10-05 19:17:07 UTC`
+
+**Observation:** Mixed-case flag spelling (`-EnCoDedCoMmAnD`) is captured
+identically to the standard-case flag. Confirms a detection rule matching on
+the flag text must be written case-insensitively, since Windows command-line
+parsing itself is case-insensitive and an attacker could use any casing to
+attempt evasion of a naive, case-sensitive text match.
+
+**Variant 5 status:** Confirmed.
+
+**Overall Case 1 status:** Testing in progress. Variants 6–7 remain to be tested.
 
 Date: 05 Oct 2026
