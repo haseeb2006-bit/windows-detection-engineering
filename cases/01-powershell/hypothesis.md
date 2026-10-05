@@ -184,6 +184,35 @@ attempt evasion of a naive, case-sensitive text match.
 
 **Variant 5 status:** Confirmed.
 
-**Overall Case 1 status:** Testing in progress. Variants 6–7 remain to be tested.
+### Variant 6 — Negative test: `Invoke-Expression` (different obfuscation technique)
+
+**Execution result:** Successful
+
+Command run:
+`powershell.exe -Command "Invoke-Expression 'Write-Host ''Variant 6 test ok'''"`
+
+PowerShell output:
+`Variant 6 test ok`
+
+**Sysmon evidence:**
+
+* **Event ID:** 1 — Process Create
+* **Image:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **CommandLine:** `"C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -Command "Invoke-Expression 'Write-Host ''Variant 6 test ok'''"`
+* **RuleName:** `technique_id=T1059.001,technique_name=PowerShell`
+* **ParentImage:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **Event time:** `2026-10-05 19:20:19 UTC`
+
+**Observation:** As expected, this event's CommandLine contains no
+`-EncodedCommand`/`-enc`/`-e` flag and no Base64 payload, it is fully readable
+plain text. A detection rule built on Hypothesis 1 (matching the encoded-command
+flag) would correctly NOT flag this event. This confirms the rule is scoped
+specifically to the encoded-command technique and does not accidentally also
+catch other, unrelated obfuscation styles like `Invoke-Expression`. A separate
+hypothesis would be needed to detect this technique.
+
+**Variant 6 status:** Confirmed (correctly not matched by the Hypothesis 1 rule).
+
+**Overall Case 1 status:** Testing in progress. Variant 7 remains to be tested.
 
 Date: 05 Oct 2026
