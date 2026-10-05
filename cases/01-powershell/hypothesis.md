@@ -62,6 +62,43 @@ The test was executed using `powershell.exe -EncodedCommand` with a harmless Bas
 
 **Variant 1 status:** Confirmed.
 
-**Overall Case 1 status:** Testing in progress. Variants 2–7 remain to be tested.
+### Variant 2 — Abbreviated `-enc` flag
+
+**Execution result:** Successful
+
+Command run:
+`powershell.exe -enc VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADIAIAB0AGUAcwB0ACAAbwBrACcA`
+(decodes to `Write-Host 'Variant 2 test ok'`)
+
+The Base64 payload was generated independently on the host using PowerShell's
+`[System.Text.Encoding]::Unicode.GetBytes()` + `[Convert]::ToBase64String()`, confirming
+understanding of the encoding process rather than reusing a pre-made string.
+
+PowerShell output:
+`Variant 2 test ok`
+
+**Sysmon evidence:**
+
+* **Event ID:** 1 — Process Create
+* **Image:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **CommandLine:** `"C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -enc VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADIAIAB0AGUAcwB0ACAAbwBrACcA`
+* **RuleName:** `technique_id=T1059.001,technique_name=PowerShell`
+* **ParentImage:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **Event time:** `2026-10-05 18:50:10 UTC`
+
+**Observation:** Sysmon captured the abbreviated `-enc` flag just as reliably as the
+full `-EncodedCommand` flag in Variant 1. Confirms the hypothesis holds for this
+abbreviation as well.
+
+**Method note:** This event was located using `Get-WinEvent` in an elevated
+PowerShell session (`Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational"
+-MaxEvents 50 | Where-Object { $_.Id -eq 1 }`) rather than manually scrolling
+Event Viewer's GUI. This proved faster and more reliable for pinpointing a specific
+recent event among hundreds of background entries. `Get-WinEvent` requires an
+elevated (Administrator) PowerShell session to read the Sysmon log.
+
+**Variant 2 status:** Confirmed.
+
+**Overall Case 1 status:** Testing in progress. Variants 3–7 remain to be tested.
 
 Date: 05 Oct 2026
