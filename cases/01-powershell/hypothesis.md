@@ -125,6 +125,40 @@ flag forms tested so far.
 
 **Variant 3 status:** Confirmed.
 
-**Overall Case 1 status:** Testing in progress. Variants 4–7 remain to be tested.
+### Variant 4 — Launched via `cmd.exe` as parent
+
+**Execution result:** Successful
+
+Command run (from a Command Prompt / cmd.exe window, not PowerShell):
+`powershell.exe -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADQAIAB0AGUAcwB0ACAAbwBrACcA`
+(decodes to `Write-Host 'Variant 4 test ok'`)
+
+PowerShell output:
+`Variant 4 test ok`
+
+**Sysmon evidence:**
+
+* **Event ID:** 1 — Process Create
+* **Image:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **CommandLine:** `powershell.exe  -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADQAIAB0AGUAcwB0ACAAbwBrACcA`
+* **RuleName:** `technique_id=T1059.001,technique_name=PowerShell`
+* **ParentImage:** `C:\Windows\System32\cmd.exe`
+* **ParentCommandLine:** `"C:\WINDOWS\system32\cmd.exe"`
+* **Event time:** `2026-10-05 19:12:17 UTC`
+
+**Observation:** Confirms the hypothesis holds regardless of parent process.
+Sysmon correctly recorded `cmd.exe` as the parent (unlike Variants 1–3, which
+were launched from an already-open PowerShell session and showed PowerShell as
+the parent). This matters because real attacks often chain `cmd.exe → powershell.exe`,
+and this test shows detection doesn't depend on a specific launch pattern.
+
+**Note:** an initial attempt accidentally ran from a PowerShell window instead of
+cmd.exe, which would have incorrectly shown PowerShell as the parent. This was
+caught by checking the `ParentImage` field and re-run correctly from genuine
+Command Prompt.
+
+**Variant 4 status:** Confirmed.
+
+**Overall Case 1 status:** Testing in progress. Variants 5–7 remain to be tested.
 
 Date: 05 Oct 2026
