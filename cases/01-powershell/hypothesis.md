@@ -99,6 +99,32 @@ elevated (Administrator) PowerShell session to read the Sysmon log.
 
 **Variant 2 status:** Confirmed.
 
-**Overall Case 1 status:** Testing in progress. Variants 3–7 remain to be tested.
+### Variant 3 — Minimal `-e` abbreviation
+
+**Execution result:** Successful
+
+Command run:
+`powershell.exe -e VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADMAIAB0AGUAcwB0ACAAbwBrACcA`
+(decodes to `Write-Host 'Variant 3 test ok'`)
+
+PowerShell output:
+`Variant 3 test ok`
+
+**Sysmon evidence:**
+
+* **Event ID:** 1 — Process Create
+* **Image:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **CommandLine:** `"C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -e VwByAGkAdABlAC0ASABvAHMAdAAgACcAVgBhAHIAaQBhAG4AdAAgADMAIAB0AGUAcwB0ACAAbwBrACcA`
+* **RuleName:** `technique_id=T1059.001,technique_name=PowerShell`
+* **ParentImage:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+* **Event time:** `2026-10-05 18:57:03 UTC`
+
+**Observation:** The minimal single-letter `-e` abbreviation is captured identically
+to `-enc` and `-EncodedCommand`. Confirms the hypothesis holds across all three
+flag forms tested so far.
+
+**Variant 3 status:** Confirmed.
+
+**Overall Case 1 status:** Testing in progress. Variants 4–7 remain to be tested.
 
 Date: 05 Oct 2026
