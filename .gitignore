@@ -236,6 +236,11 @@ __marimo__/
 *.evt
 *.etl
 *.dmp
+# --- Exception: specific, reviewed evidence files for case documentation ---
+# Only files explicitly placed in a case's evidence/ folder are allowed,
+# everything else matching *.evtx above stays blocked.
+!cases/**/evidence/*.evtx
+!cases/**/evidence/*.csv
 
 # --- Third-party tool binaries (download, don't commit) ---
 hayabusa*.exe
