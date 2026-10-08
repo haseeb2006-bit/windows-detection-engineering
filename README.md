@@ -1,31 +1,60 @@
 # Windows Detection Engineering & Evaluation Lab
 
-A controlled Windows 11 lab for writing, testing, and honestly measuring detection rules.
+A controlled Windows 11 lab where I write my own detection rules, then actually
+test whether they work, instead of just assuming they do.
 
-**Status: work in progress. No results yet.**
+**Status: Case 1 (PowerShell) is done. Starting Case 2 (Persistence) next.**
 
-## What this project is
+## What this is
 
-I run harmless, adversary-like activity inside an isolated Windows 11 VM, study the telemetry it produces (Sysmon, Windows auditing, PowerShell logging), and write my own Sigma rules. I then run those rules with Hayabusa against exported event logs to see what they catch, what they miss, and what benign activity they wrongly flag.
+I run harmless, attacker-style activity inside an isolated Windows 11 VM, look
+at the telemetry it leaves behind (Sysmon, Windows auditing, PowerShell
+logging), and write my own Sigma rules based on what I actually see. Then I run
+those rules through Hayabusa against exported logs to find out what they catch,
+what they miss, and what normal, boring activity they wrongly flag.
 
-## Method
+## How I'm approaching it
 
-1. Write hypotheses and test variants first, and commit them before testing.
-2. Run the rule, then measure detected, missed, and false-positive results.
-3. Find the root cause of each miss and false positive, then tune (up to about three rounds).
-4. Freeze the rule and run a holdout test that was never used for tuning.
-5. Report the results with raw counts, limitations, and negative results.
+1. Write down what I expect to happen and the exact variants I'll test, and
+   commit that before running anything.
+2. Run it, then actually measure what got detected, what got missed, and what
+   false positives showed up.
+3. Figure out *why* something was missed or wrongly flagged, then tune the
+   rule (a few rounds, not endlessly).
+4. Freeze the rule and test it against something new I didn't use while
+   tuning.
+5. Write up the real numbers, including the misses and the limitations, not
+   just the parts that make it look good.
 
-## Planned cases
+## Cases
 
-1. PowerShell / command execution
-2. Persistence (Run keys, scheduled tasks, startup folder)
-3. LOLBin execution and ingress tool transfer
-4. Defense evasion / security-control tampering
+| Case | Status | What happened |
+|---|---|---|
+| [01 — PowerShell / command execution](cases/01-powershell/) | Done | Tested 7 variants, wrote a Sigma rule, ran it through Hayabusa: caught 5/5 malicious variants, 0 false positives on the 2 benign ones |
+| 02 — Persistence (Run keys, Scheduled Tasks, Startup folder) | Not started yet | |
+| 03 — LOLBin execution / ingress tool transfer | Not started yet | |
+| 04 — Defense evasion / security-control tampering | Not started yet | |
 
-## Safety
+## Something I found interesting
 
-All activity happens inside an isolated VM using harmless test behavior only. No real malware, no external targets. Raw event logs and VM images are never committed.
+My rule for catching encoded PowerShell commands (`-EncodedCommand`, `-enc`,
+`-e`) held up even when I changed the casing or launched it from a different
+parent process, and it correctly ignored a totally different obfuscation
+technique (`Invoke-Expression`) and plain, everyday PowerShell use. What
+actually surprised me: it still fired correctly even when I typo'd a payload
+by accident, and even when I accidentally launched it from the wrong parent
+process during testing. Turns out that's because the rule matches on the flag
+itself, not on a working payload or a specific process chain, which is exactly
+what you'd want. Full breakdown in
+[`cases/01-powershell/results.md`](cases/01-powershell/results.md).
+
+## Keeping it safe
+
+Everything happens inside an isolated VM with harmless test commands only,
+no real malware, nothing aimed at anything outside the lab. I don't commit
+full raw event logs or the VM itself, the only exception is a small, specific
+set of evidence files per case that I've actually reviewed, kept in each
+case's `evidence/` folder.
 
 ## License
 
